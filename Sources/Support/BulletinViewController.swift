@@ -286,25 +286,26 @@ extension BulletinViewController {
             break
         }
 
-        switch (traitCollection.verticalSizeClass, traitCollection.horizontalSizeClass) {
-        case (.regular, .regular):
-            stackLeadingConstraint.constant = 32
-            stackTrailingConstraint.constant = -32
-            stackBottomConstraint.constant = -32
-            contentTopConstraint.constant = -32
-            contentStackView.spacing = 32
-
-        default:
-            stackLeadingConstraint.constant = 24
-            stackTrailingConstraint.constant = -24
-            stackBottomConstraint.constant = -24
-            contentTopConstraint.constant = -24
-            contentStackView.spacing = 24
-
-        }
-
-    }
-
+		let space = (traitCollection.verticalSizeClass, traitCollection.horizontalSizeClass) == (.regular, .regular) ?
+			computeInnerSpace(with: .regular) : computeInnerSpace(with: .compact)
+        
+		stackLeadingConstraint.constant = space
+		stackTrailingConstraint.constant = -space
+		stackBottomConstraint.constant = -space
+		contentTopConstraint.constant = -space
+		contentStackView.spacing = space
+	}
+	
+	/**
+	* Calculate ratio between regular and compact sizeClass
+	* Regular/Compact sizeClass ratio is 32/24 (ie. 4/3)
+	* Regular/Compact BLTNSpacing ratio is 12/6 (ie. 32/16)
+	*/
+	private func computeInnerSpace(with spacing: BLTNSpacing) -> CGFloat {
+		let innerSpacing = manager?.innerSpacing ?? .regular
+		return innerSpacing.rawValue * ((4/3) * spacing.rawValue + 16)/32
+	}
+	
     // MARK: - Transition Adaptivity
 
     var defaultBottomMargin: CGFloat {

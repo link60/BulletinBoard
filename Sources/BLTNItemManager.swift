@@ -84,6 +84,14 @@ import UIKit
      */
 
     @objc public var edgeSpacing: BLTNSpacing = .regular
+	
+	/**
+	* The spacing between the edge of the card and the edge of the container view. Defaults to regular.
+	*
+	* Set this value before presenting the bulletin. Changing it after will have no effect.
+	*/
+	
+	@objc public var innerSpacing: BLTNSpacing = .regular
 
     /**
      * The rounded corner radius of the bulletin card. Defaults to 12, and 36 on iPhone X.
