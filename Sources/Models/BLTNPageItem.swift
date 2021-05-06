@@ -25,7 +25,7 @@ import UIKit
     // MARK: - Page Contents
 
     /// The title of the page.
-    @objc public let title: String
+    @objc public let title: String?
 
     /**
      * An image to display below the title.
@@ -87,7 +87,7 @@ import UIKit
      * - parameter title: The title of the page.
      */
     
-    @objc public init(title: String) {
+    @objc public init(title: String? = nil) {
         self.title = title
         super.init()
     }
@@ -178,13 +178,15 @@ import UIKit
         insertComplementaryViews(makeHeaderViews)
         
         // Title
-        let isNextToCloseButton = isDismissable && requiresCloseButton
-        let titleView = interfaceBuilder.makeTitleLabel(isNextToCloseButton: isNextToCloseButton)
-        titleView.label.text = title
-        
-        self.titleLabel = titleView
-        contentViews.append(titleView)
-        insertComplementaryViews(makeViewsUnderTitle)
+		if let title = self.title {
+			let isNextToCloseButton = isDismissable && requiresCloseButton
+			let titleView = interfaceBuilder.makeTitleLabel(isNextToCloseButton: isNextToCloseButton)
+			titleView.label.text = title
+			
+			self.titleLabel = titleView
+			contentViews.append(titleView)
+			insertComplementaryViews(makeViewsUnderTitle)
+		}
         
         // Image View
         if let image = self.image {
