@@ -37,4 +37,8 @@ import UIKit
     @objc public class var regular: BLTNSpacing {
         return BLTNSpacing(rawValue: 12)
     }
+    
+    static func == (lhs: BLTNSpacing, rhs: BLTNSpacing) -> Bool {
+        return lhs.rawValue == rhs.rawValue
+    }
 }
