@@ -8,6 +8,15 @@
 - Fix the background view origin when presenting
 [#183](https://github.com/alexaubry/BulletinBoard/pull/183)
 
+## 🔖 v5.0.0
+### Changes
+- Require iOS 11.0
+- Support for Swift Package Manager
+
+### Fixes
+- Fix the background view origin when presenting
+[#183](https://github.com/alexaubry/BulletinBoard/pull/183)
+
 ## 🔖 v4.1.2
 ### Fixes
 - Fix crash for iOS 11 and under
