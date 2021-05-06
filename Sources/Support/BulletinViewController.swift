@@ -299,13 +299,15 @@ extension BulletinViewController {
 	/**
 	* Calculate ratio between regular and compact sizeClass
 	* Regular/Compact sizeClass ratio is 32/24 (ie. 4/3)
-	* Regular/Compact BLTNSpacing ratio is 12/6 (ie. 32/16)
 	*/
-	private func computeInnerSpace(with spacing: BLTNSpacing) -> CGFloat {
-		let innerSpacing = manager?.innerSpacing ?? .regular
-		return innerSpacing.rawValue * ((4/3) * spacing.rawValue + 16)/32
-	}
-	
+    private func computeInnerSpace(with spacing: BLTNSpacing) -> CGFloat {
+        let innerSpacing = manager?.innerSpacing ?? .regular
+        if innerSpacing == .none {
+            return 0
+        }
+        return innerSpacing.rawValue * 4/3 + spacing.rawValue * 4/3
+    }
+
     // MARK: - Transition Adaptivity
 
     var defaultBottomMargin: CGFloat {
