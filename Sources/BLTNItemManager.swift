@@ -24,6 +24,10 @@ import UIKit
     /// Bulletin view controller.
     fileprivate var bulletinController: BulletinViewController!
 
+    @objc public var contentView: UIView? {
+        return self.bulletinController?.contentView
+    }
+    
     // MARK: - Background
 
     /**
