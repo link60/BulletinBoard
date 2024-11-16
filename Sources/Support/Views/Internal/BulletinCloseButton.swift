@@ -9,7 +9,23 @@ import UIKit
  * A button to close the bulletin.
  */
 
-class BulletinCloseButton: UIControl {
+public final class BulletinCloseButton: UIControl {
+    
+    var closeGlyphWidthConstrain: NSLayoutConstraint? = nil
+    var alternateCloseImage: UIImage? {
+        didSet {
+            closeGlyph.image = alternateCloseImage
+            closeGlyphWidthConstrain?.isActive = false
+            closeGlyphWidthConstrain?.constant = 20
+            closeGlyphWidthConstrain?.isActive = true
+        }
+    }
+    
+    public var menuConfig: UIContextMenuConfiguration? = nil
+    public override func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        menuConfig
+    }
+    
     private let backgroundContainer = UIView()
     private let closeGlyph = UIImageView()
 
@@ -42,7 +58,7 @@ class BulletinCloseButton: UIControl {
 
         backgroundContainer.layer.cornerRadius = 14
         
-        closeGlyph.image = UIImage.closeButton.withRenderingMode(.alwaysTemplate)
+        closeGlyph.image = alternateCloseImage ?? UIImage.closeButton.withRenderingMode(.alwaysTemplate)
         closeGlyph.contentMode = .scaleAspectFit
         closeGlyph.clipsToBounds = true
 
@@ -61,8 +77,9 @@ class BulletinCloseButton: UIControl {
         backgroundContainer.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         backgroundContainer.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 
-        closeGlyph.widthAnchor.constraint(equalToConstant: 12).isActive = true
-        closeGlyph.heightAnchor.constraint(equalToConstant: 12).isActive = true
+        closeGlyphWidthConstrain = closeGlyph.widthAnchor.constraint(equalToConstant: 12)
+        closeGlyphWidthConstrain?.isActive = true
+        closeGlyph.heightAnchor.constraint(equalTo: closeGlyph.widthAnchor).isActive = true
         closeGlyph.centerXAnchor.constraint(equalTo: backgroundContainer.centerXAnchor).isActive = true
         closeGlyph.centerYAnchor.constraint(equalTo: backgroundContainer.centerYAnchor).isActive = true
 

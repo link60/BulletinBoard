@@ -42,6 +42,12 @@ import UIKit
      */
 
     @objc open var requiresCloseButton: Bool = true
+    
+    @objc open var alternateCloseImage: UIImage? = nil
+    
+    @objc open var alternateCloseHandler: ((BulletinCloseButton) -> Void)?
+    
+    @objc open var closeButtonConfiguration: ((BulletinCloseButton) -> Void)?
 
     /**
      * Whether the card should start with an activity indicator.

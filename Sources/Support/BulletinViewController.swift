@@ -21,7 +21,14 @@ final class BulletinViewController: UIViewController, UIGestureRecognizerDelegat
 
     /// The button that allows the users to close the bulletin.
     let closeButton = BulletinCloseButton()
+    var alternateCloseImage: UIImage? = nil {
+        didSet {
+            closeButton.alternateCloseImage = alternateCloseImage
+        }
+    }
 
+    var alternateCloseHandler: ((BulletinCloseButton) -> Void)?
+    
     /**
      * The stack view displaying the content of the card.
      *
@@ -126,7 +133,8 @@ extension BulletinViewController {
         widthConstraint.priority = .required
 
         // Close button
-
+        closeButton.alternateCloseImage = alternateCloseImage
+        
         contentView.addSubview(closeButton)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12).isActive = true
@@ -496,7 +504,7 @@ extension BulletinViewController {
     }
 
     @objc func closeButtonTapped() {
-        manager?.dismissBulletin(animated: true)
+        alternateCloseHandler?(closeButton) ?? manager?.dismissBulletin(animated: true)
     }
 
 }
