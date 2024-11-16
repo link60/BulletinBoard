@@ -14,10 +14,12 @@ public final class BulletinCloseButton: UIControl {
     var closeGlyphWidthConstrain: NSLayoutConstraint? = nil
     var alternateCloseImage: UIImage? {
         didSet {
-            closeGlyph.image = alternateCloseImage
-            closeGlyphWidthConstrain?.isActive = false
-            closeGlyphWidthConstrain?.constant = 20
-            closeGlyphWidthConstrain?.isActive = true
+            if alternateCloseImage != nil {
+                closeGlyph.image = alternateCloseImage
+                closeGlyphWidthConstrain?.isActive = false
+                closeGlyphWidthConstrain?.constant = 20
+                closeGlyphWidthConstrain?.isActive = true
+            }
         }
     }
     
