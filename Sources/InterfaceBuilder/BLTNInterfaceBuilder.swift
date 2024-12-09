@@ -102,7 +102,11 @@ import UIKit
             actionButton.setBackgroundImage(actionButtonImage, for: .normal)
             
         } else {
-            actionButton.setBackgroundColor(appearance.actionButtonColor, forState: .normal)
+            if UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+                actionButton.setBackgroundColor(appearance.actionButtonColor.withAlphaComponent(0.35), forState: .normal)
+            } else {
+                actionButton.setBackgroundColor(appearance.actionButtonColor, forState: .normal)
+            }
         }
         
         actionButton.setTitleColor(appearance.actionButtonTitleColor, for: .normal)
