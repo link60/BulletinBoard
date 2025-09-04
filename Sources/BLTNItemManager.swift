@@ -501,6 +501,29 @@ extension BLTNItemManager {
         
     }
 
+    @available(iOS 13.0, *)
+    @objc(showBulletinInWindowSceneOfApplication:animated:completion:)
+    public func showBulletin(inWindowSceneOf application: UIApplication,
+                             animated: Bool = true,
+                             completion: (() -> Void)? = nil) {
+        
+        assert(presentingWindow == nil, "Attempt to present a Bulletin on top of another Bulletin window. Make sure to dismiss any existing bulletin before calling this method.")
+        
+        guard let windowScene = (application.connectedScenes.compactMap { $0 as? UIWindowScene }.first { $0.activationState == .foregroundActive }) else { return }
+        presentingWindow = UIWindow(windowScene: windowScene)
+        presentingWindow?.rootViewController = UIViewController()
+        
+        if let topWindow = windowScene.windows.first {
+            presentingWindow?.windowLevel = topWindow.windowLevel + 1
+        }
+        
+        presentingWindow?.makeKeyAndVisible()
+        
+        if let vc = presentingWindow?.rootViewController {
+            self.showBulletin(above: vc, animated: animated, completion: completion)
+        }
+    }
+
     /**
      * Dismisses the bulletin and clears the current page. You will have to call `prepare` before
      * presenting the bulletin again.
