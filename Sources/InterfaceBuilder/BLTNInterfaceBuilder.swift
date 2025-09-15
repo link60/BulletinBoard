@@ -11,22 +11,22 @@ import UIKit
  */
 
 @objc open class BLTNInterfaceBuilder: NSObject {
-
+    
     /// The appearance to use to generate the items.
     @objc public let appearance: BLTNItemAppearance
-
+    
     /// Creates a new interface builder.
     @objc public required init(appearance: BLTNItemAppearance) {
         self.appearance = appearance
     }
-
+    
     /**
      * Creates a standard title label.
      */
-
+    
     @objc(makeTitleLabelNextToCloseButton:)
     open func makeTitleLabel(isNextToCloseButton: Bool) -> BLTNTitleLabelContainer {
-
+        
         let titleLabel = UILabel()
         titleLabel.textAlignment = .center
         titleLabel.textColor = appearance.titleTextColor
@@ -34,29 +34,29 @@ import UIKit
         titleLabel.numberOfLines = 2
         titleLabel.adjustsFontSizeToFitWidth = true
         titleLabel.lineBreakMode = .byWordWrapping
-
+        
         titleLabel.font = appearance.makeTitleFont()
         let inset: CGFloat = isNextToCloseButton ? 12 + 30 : 0
-
+        
         return BLTNTitleLabelContainer(label: titleLabel, horizontalInset: inset)
     }
-
+    
     /**
      * Creates a standard description label.
      */
-
+    
     @objc open func makeDescriptionLabel() -> UILabel {
-
+        
         let descriptionLabel = UILabel()
         descriptionLabel.textAlignment = .center
         descriptionLabel.textColor = appearance.descriptionTextColor
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = appearance.makeDescriptionFont()
-
+        
         return descriptionLabel
-
+        
     }
-
+    
     /**
      * Creates a standard text field with an optional delegate.
      *
@@ -64,22 +64,22 @@ import UIKit
      * - parameter returnKey: The type of return key to apply to the text field.
      * - parameter delegate: The delegate for the text field.
      */
-
+    
     @objc open func makeTextField(placeholder: String? = nil,
                                   returnKey: UIReturnKeyType = .default,
                                   delegate: UITextFieldDelegate? = nil) -> UITextField {
-
+        
         let textField = UITextField()
         textField.delegate = delegate
         textField.textAlignment = .left
         textField.placeholder = placeholder
         textField.borderStyle = .roundedRect
         textField.returnKeyType = returnKey
-
+        
         return textField
-
+        
     }
-
+    
     /**
      * Creates a standard action (main) button.
      *
@@ -88,9 +88,9 @@ import UIKit
      *
      * - parameter title: The title of the button.
      */
-
+    
     @objc open func makeActionButton(title: String) -> BLTNHighlightButtonWrapper {
-
+        
         let actionButton = HighlightButton()
         actionButton.layer.cornerRadius = appearance.actionButtonCornerRadius
         
@@ -100,39 +100,51 @@ import UIKit
         
         if let actionButtonImage = appearance.actionButtonImage {
             actionButton.setBackgroundImage(actionButtonImage, for: .normal)
-            
-        } else {
-            if UIScreen.main.traitCollection.userInterfaceStyle == .dark {
-                actionButton.setBackgroundColor(appearance.actionButtonColor.withAlphaComponent(0.35), forState: .normal)
-            } else {
-                actionButton.setBackgroundColor(appearance.actionButtonColor, forState: .normal)
-            }
         }
         
         actionButton.setTitleColor(appearance.actionButtonTitleColor, for: .normal)
         actionButton.contentHorizontalAlignment = .center
-
+        
         actionButton.setTitle(title, for: .normal)
         actionButton.titleLabel?.font = appearance.makeActionButtonFont()
-
+        
         actionButton.clipsToBounds = true
-
+        
         if let color = appearance.actionButtonBorderColor {
-          actionButton.layer.borderColor = color.cgColor
-          actionButton.layer.borderWidth = appearance.actionButtonBorderWidth
+            actionButton.layer.borderColor = color.cgColor
+            actionButton.layer.borderWidth = appearance.actionButtonBorderWidth
         }
-
+        
         let wrapper = BLTNHighlightButtonWrapper(button: actionButton)
         wrapper.setContentHuggingPriority(.defaultLow, for: .horizontal)
-
+        
         let heightConstraint = wrapper.heightAnchor.constraint(equalToConstant: 55)
         heightConstraint.priority = .defaultHigh
         heightConstraint.isActive = true
-
+        
+        if #available(iOS 26.0, *) {
+            actionButton.configuration = .prominentClearGlass()
+            actionButton.configuration?.baseBackgroundColor = appearance.actionButtonColor
+        } else {
+            if UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+                actionButton.tintColor = appearance.actionButtonColor.withAlphaComponent(0.35)
+                if #available(iOS 15.0, *) {
+                    actionButton.configuration?.baseBackgroundColor = appearance.actionButtonColor.withAlphaComponent(0.35)
+                }
+                actionButton.backgroundColor = appearance.actionButtonColor.withAlphaComponent(0.35)
+            } else {
+                actionButton.tintColor = appearance.actionButtonColor
+                if #available(iOS 15.0, *) {
+                    actionButton.configuration?.baseBackgroundColor = appearance.actionButtonColor
+                }
+                actionButton.backgroundColor = appearance.actionButtonColor
+            }
+        }
+        
         return wrapper
-
+        
     }
-
+    
     /**
      * Creates a standard alternative button.
      *
@@ -140,9 +152,9 @@ import UIKit
      *
      * - parameter title: The title of the button.
      */
-
+    
     @objc open func makeAlternativeButton(title: String) -> UIButton {
-
+        
         let alternativeButton = UIButton()
         alternativeButton.layer.cornerRadius = appearance.alternativeButtonCornerRadius
         
@@ -153,35 +165,35 @@ import UIKit
         alternativeButton.setTitle(title, for: .normal)
         alternativeButton.setTitleColor(appearance.alternativeButtonTitleColor, for: .normal)
         alternativeButton.titleLabel?.font = appearance.makeAlternativeButtonFont()
-
+        
         if let color = appearance.alternativeButtonBorderColor {
-          alternativeButton.clipsToBounds = true
-          alternativeButton.layer.borderColor = color.cgColor
-          alternativeButton.layer.borderWidth = appearance.alternativeButtonBorderWidth
+            alternativeButton.clipsToBounds = true
+            alternativeButton.layer.borderColor = color.cgColor
+            alternativeButton.layer.borderWidth = appearance.alternativeButtonBorderWidth
         }
-
+        
         return alternativeButton
-
+        
     }
-
+    
     /**
      * Creates a stack view to contain a group of objects.
      *
      * - parameter spacing: The spacing between elements. Defaults to `10`.
      */
-
+    
     @objc open func makeGroupStack(spacing: CGFloat = 10) -> UIStackView {
-
+        
         let buttonsStack = UIStackView()
         buttonsStack.axis = .vertical
         buttonsStack.alignment = .fill
         buttonsStack.distribution = .fill
         buttonsStack.spacing = spacing
-
+        
         return buttonsStack
-
+        
     }
-
+    
     /**
      * Wraps a view without intrinsic content size inside a view with an intrinsic content size.
      *
@@ -196,32 +208,32 @@ import UIKit
      * - returns: The view that contains the `view` and an intrinsic content size. You can add the returned
      * view to a stack view.
      */
-
+    
     @objc open func wrapView(_ view: UIView, width: NSNumber?, height: NSNumber?, position: BLTNViewPosition) -> BLTNContainerView {
-
+        
         let container = BLTNContainerView()
-
+        
         container.contentSize = CGSize(width: width.flatMap(CGFloat.init) ?? UIView.noIntrinsicMetric,
                                        height: height.flatMap(CGFloat.init) ?? UIView.noIntrinsicMetric)
-
+        
         container.setChildView(view) { parent, child in
-
+            
             switch position {
-            case .centered:
-                child.centerXAnchor.constraint(equalTo: parent.centerXAnchor).isActive = true
-                child.centerYAnchor.constraint(equalTo: parent.centerYAnchor).isActive = true
-
-            case .pinnedToEdges:
-                child.leadingAnchor.constraint(equalTo: parent.leadingAnchor).isActive = true
-                child.trailingAnchor.constraint(equalTo: parent.trailingAnchor).isActive = true
-                child.topAnchor.constraint(equalTo: parent.topAnchor).isActive = true
-                child.bottomAnchor.constraint(equalTo: parent.bottomAnchor).isActive = true
+                case .centered:
+                    child.centerXAnchor.constraint(equalTo: parent.centerXAnchor).isActive = true
+                    child.centerYAnchor.constraint(equalTo: parent.centerYAnchor).isActive = true
+                    
+                case .pinnedToEdges:
+                    child.leadingAnchor.constraint(equalTo: parent.leadingAnchor).isActive = true
+                    child.trailingAnchor.constraint(equalTo: parent.trailingAnchor).isActive = true
+                    child.topAnchor.constraint(equalTo: parent.topAnchor).isActive = true
+                    child.bottomAnchor.constraint(equalTo: parent.bottomAnchor).isActive = true
             }
-
+            
         }
-
+        
         return container
-
+        
     }
-
+    
 }
