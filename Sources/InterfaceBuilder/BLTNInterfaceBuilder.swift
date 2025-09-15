@@ -124,7 +124,11 @@ import UIKit
         
         if #available(iOS 26.0, *) {
             actionButton.configuration = .prominentClearGlass()
-            actionButton.configuration?.baseBackgroundColor = appearance.actionButtonColor
+            if UIScreen.main.traitCollection.userInterfaceStyle == .dark {
+                actionButton.configuration?.baseBackgroundColor = appearance.actionButtonColor.withAlphaComponent(0.35)
+            } else {
+                actionButton.configuration?.baseBackgroundColor = appearance.actionButtonColor
+            }
         } else {
             if UIScreen.main.traitCollection.userInterfaceStyle == .dark {
                 actionButton.tintColor = appearance.actionButtonColor.withAlphaComponent(0.35)
