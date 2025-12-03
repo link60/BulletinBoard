@@ -19,6 +19,8 @@ final class BulletinViewController: UIViewController, UIGestureRecognizerDelegat
     /// The subview that contains the contents of the card.
     let contentView = RoundedView()
 
+    var effectView: UIVisualEffectView? = nil
+
     /// The button that allows the users to close the bulletin.
     let closeButton = BulletinCloseButton()
     var alternateCloseImage: UIImage? = nil {
@@ -197,7 +199,18 @@ extension BulletinViewController {
         setUpKeyboardLogic()
 
         contentView.bringSubviewToFront(closeButton)
-
+        
+        if #available(iOS 26.0, *) {
+            contentView.backgroundColor = .clear
+            let effectView = UIVisualEffectView(effect: UIGlassEffect(style: .regular))
+            effectView.translatesAutoresizingMaskIntoConstraints = false
+            contentView.insertSubview(effectView, at: 0)
+            effectView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+            effectView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+            effectView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+            effectView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+            self.effectView = effectView
+        }
     }
 
     @available(iOS 11.0, *)
@@ -218,6 +231,8 @@ extension BulletinViewController {
         contentView.backgroundColor = manager.backgroundColor
         contentView.cornerRadius = CGFloat((manager.cardCornerRadius ?? 12).doubleValue)
         closeButton.updateColors(isDarkBackground: manager.backgroundColor.needsDarkText == false)
+
+        effectView?.layer.cornerRadius = contentView.cornerRadius
 
         let cardPadding = manager.edgeSpacing.rawValue
 
@@ -425,12 +440,13 @@ extension BulletinViewController {
 
         if manager?.edgeSpacing.rawValue == 0 {
             contentView.cornerRadius = 0
+            effectView?.layer.cornerRadius = 0
             return
         }
 
         let defaultRadius: NSNumber = screenHasRoundedCorners ? 36 : 12
         contentView.cornerRadius = CGFloat((manager?.cardCornerRadius ?? defaultRadius).doubleValue)
-
+        effectView?.layer.cornerRadius = contentView.cornerRadius
     }
 
 }
