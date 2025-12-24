@@ -702,6 +702,7 @@ extension BLTNItemManager {
 
             let currentElements = elementsChanged ? newArrangedSubviews : oldArrangedSubviews
             self.bulletinController.contentStackView.alpha = contentAlpha
+            self.bulletinController.updateTopLeftActionButton()
             self.bulletinController.updateCloseButton(isRequired: self.needsCloseButton && !showActivityIndicator)
 
             for arrangedSubview in currentElements {
