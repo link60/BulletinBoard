@@ -40,6 +40,25 @@ enum BulletinDataSource {
 
         page.isDismissable = true
         page.shouldStartWithActivityIndicator = true
+        
+        page.topLeftActionImage = UIImage(systemName: "ellipsis")
+        page.topLeftActionHandler = { item in
+            
+        }
+        page.topLeftActionButtonConfiguration = { button in
+            button.menuConfig = UIContextMenuConfiguration(actionProvider: { _ in
+                let menu1 = UIMenu(options: .displayInline, children: [
+                    UIAction(title: "Action 1") { _ in },
+                    UIAction(title: "Action 2") { _ in }
+                ])
+                let menu2 = UIAction(title: "CANCEL", attributes: .destructive) { _ in
+                    page.manager?.dismissBulletin()
+                }
+                return UIMenu(children: [menu1, menu2])
+            })
+            button.isContextMenuInteractionEnabled = true
+            button.showsMenuAsPrimaryAction = true
+        }
 
         page.presentationHandler = { item in
 

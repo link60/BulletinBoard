@@ -198,9 +198,14 @@ extension BLTNItemManager {
         isPrepared = true
         isPreparing = true
         shouldDisplayActivityIndicator = rootItem.shouldStartWithActivityIndicator
+        
         bulletinController.alternateCloseImage = rootItem.alternateCloseImage
         bulletinController.alternateCloseHandler = rootItem.alternateCloseHandler
         rootItem.closeButtonConfiguration?(bulletinController.closeButton)
+        
+        bulletinController.topLeftActionImage = rootItem.topLeftActionImage
+        bulletinController.topLeftActionHandler = rootItem.topLeftActionHandler
+        rootItem.topLeftActionButtonConfiguration?(bulletinController.topLeftActionButton)
         
         refreshCurrentItemInterface()
         isPreparing = false

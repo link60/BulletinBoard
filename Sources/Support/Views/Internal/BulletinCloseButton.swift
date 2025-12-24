@@ -11,14 +11,14 @@ import UIKit
 
 public final class BulletinCloseButton: UIControl {
     
-    var closeGlyphWidthConstrain: NSLayoutConstraint? = nil
-    var alternateCloseImage: UIImage? {
+    var glyphWidthConstrain: NSLayoutConstraint? = nil
+    var alternateImage: UIImage? {
         didSet {
-            if alternateCloseImage != nil {
-                closeGlyph.image = alternateCloseImage
-                closeGlyphWidthConstrain?.isActive = false
-                closeGlyphWidthConstrain?.constant = 20
-                closeGlyphWidthConstrain?.isActive = true
+            if alternateImage != nil {
+                glyph.image = alternateImage
+                glyphWidthConstrain?.isActive = false
+                glyphWidthConstrain?.constant = 20
+                glyphWidthConstrain?.isActive = true
             }
         }
     }
@@ -29,7 +29,7 @@ public final class BulletinCloseButton: UIControl {
     }
     
     private let backgroundContainer = UIView()
-    private let closeGlyph = UIImageView()
+    private let glyph = UIImageView()
 
     // MARK: - Initialization
 
@@ -56,34 +56,34 @@ public final class BulletinCloseButton: UIControl {
     
         // Layout
         addSubview(backgroundContainer)
-        addSubview(closeGlyph)
+        addSubview(glyph)
 
         backgroundContainer.layer.cornerRadius = 14
         
-        closeGlyph.image = alternateCloseImage ?? UIImage.closeButton.withRenderingMode(.alwaysTemplate)
-        closeGlyph.contentMode = .scaleAspectFit
-        closeGlyph.clipsToBounds = true
+        glyph.image = alternateImage ?? UIImage.closeButton.withRenderingMode(.alwaysTemplate)
+        glyph.contentMode = .scaleAspectFit
+        glyph.clipsToBounds = true
 
         backgroundContainer.isUserInteractionEnabled = false
-        closeGlyph.isUserInteractionEnabled = false
+        glyph.isUserInteractionEnabled = false
 
     }
 
     private func configureConstraints() {
 
         backgroundContainer.translatesAutoresizingMaskIntoConstraints = false
-        closeGlyph.translatesAutoresizingMaskIntoConstraints = false
+        glyph.translatesAutoresizingMaskIntoConstraints = false
 
         backgroundContainer.widthAnchor.constraint(equalToConstant: 28).isActive = true
         backgroundContainer.heightAnchor.constraint(equalToConstant: 28).isActive = true
         backgroundContainer.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         backgroundContainer.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 
-        closeGlyphWidthConstrain = closeGlyph.widthAnchor.constraint(equalToConstant: 12)
-        closeGlyphWidthConstrain?.isActive = true
-        closeGlyph.heightAnchor.constraint(equalTo: closeGlyph.widthAnchor).isActive = true
-        closeGlyph.centerXAnchor.constraint(equalTo: backgroundContainer.centerXAnchor).isActive = true
-        closeGlyph.centerYAnchor.constraint(equalTo: backgroundContainer.centerYAnchor).isActive = true
+        glyphWidthConstrain = glyph.widthAnchor.constraint(equalToConstant: 12)
+        glyphWidthConstrain?.isActive = true
+        glyph.heightAnchor.constraint(equalTo: glyph.widthAnchor).isActive = true
+        glyph.centerXAnchor.constraint(equalTo: backgroundContainer.centerXAnchor).isActive = true
+        glyph.centerYAnchor.constraint(equalTo: backgroundContainer.centerYAnchor).isActive = true
 
     }
 
@@ -92,10 +92,10 @@ public final class BulletinCloseButton: UIControl {
     func updateColors(isDarkBackground: Bool) {
         if isDarkBackground {
             backgroundContainer.backgroundColor = #colorLiteral(red: 0.9529411765, green: 0.9607843137, blue: 0.9607843137, alpha: 1)
-            closeGlyph.tintColor = #colorLiteral(red: 0.3764705882, green: 0.3921568627, blue: 0.431372549, alpha: 1)
+            glyph.tintColor = #colorLiteral(red: 0.3764705882, green: 0.3921568627, blue: 0.431372549, alpha: 1)
         } else {
             backgroundContainer.backgroundColor = #colorLiteral(red: 0.3764705882, green: 0.3921568627, blue: 0.431372549, alpha: 1)
-            closeGlyph.tintColor = #colorLiteral(red: 0.9529411765, green: 0.9607843137, blue: 0.9607843137, alpha: 1)
+            glyph.tintColor = #colorLiteral(red: 0.9529411765, green: 0.9607843137, blue: 0.9607843137, alpha: 1)
         }
     }
 

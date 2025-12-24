@@ -25,11 +25,21 @@ final class BulletinViewController: UIViewController, UIGestureRecognizerDelegat
     let closeButton = BulletinCloseButton()
     var alternateCloseImage: UIImage? = nil {
         didSet {
-            closeButton.alternateCloseImage = alternateCloseImage
+            closeButton.alternateImage = alternateCloseImage
         }
     }
 
     var alternateCloseHandler: ((BulletinCloseButton) -> Void)?
+    
+    /// Top Left Action Button
+    let topLeftActionButton = BulletinCloseButton()
+    var topLeftActionImage: UIImage? = nil {
+        didSet {
+            topLeftActionButton.alternateImage = topLeftActionImage
+        }
+    }
+    
+    var topLeftActionHandler: ((BulletinCloseButton) -> Void)?
     
     /**
      * The stack view displaying the content of the card.
@@ -134,9 +144,19 @@ extension BulletinViewController {
         widthConstraint = contentView.widthAnchor.constraint(equalToConstant: 444)
         widthConstraint.priority = .required
 
+        // Top Left Action button
+        topLeftActionButton.alternateImage = topLeftActionImage
+        contentView.addSubview(topLeftActionButton)
+        topLeftActionButton.translatesAutoresizingMaskIntoConstraints = false
+        topLeftActionButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12).isActive = true
+        topLeftActionButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12).isActive = true
+        topLeftActionButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        topLeftActionButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        topLeftActionButton.isUserInteractionEnabled = true
+        topLeftActionButton.addTarget(self, action: #selector(topLeftActionButtonTapped), for: .touchUpInside)
+
         // Close button
-        closeButton.alternateCloseImage = alternateCloseImage
-        
+        closeButton.alternateImage = alternateCloseImage
         contentView.addSubview(closeButton)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12).isActive = true
@@ -144,11 +164,9 @@ extension BulletinViewController {
         closeButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
         closeButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
         closeButton.isUserInteractionEnabled = true
-
         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
 
         // Content Stack View
-
         contentView.addSubview(contentStackView)
 
         stackLeadingConstraint = contentStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
@@ -198,6 +216,7 @@ extension BulletinViewController {
         configureContentView()
         setUpKeyboardLogic()
 
+        contentView.bringSubviewToFront(topLeftActionButton)
         contentView.bringSubviewToFront(closeButton)
         
         if #available(iOS 26.0, *) {
@@ -230,6 +249,7 @@ extension BulletinViewController {
 
         contentView.backgroundColor = manager.backgroundColor
         contentView.cornerRadius = CGFloat((manager.cardCornerRadius ?? 12).doubleValue)
+        topLeftActionButton.updateColors(isDarkBackground: manager.backgroundColor.needsDarkText == false)
         closeButton.updateColors(isDarkBackground: manager.backgroundColor.needsDarkText == false)
 
         effectView?.layer.cornerRadius = contentView.cornerRadius
@@ -475,6 +495,7 @@ extension BulletinViewController {
         let animations = {
             self.activityIndicator.alpha = 1
             self.contentStackView.alpha = 0
+            self.topLeftActionButton.alpha = 0
             self.closeButton.alpha = 0
         }
 
@@ -494,6 +515,7 @@ extension BulletinViewController {
 
         let animations = {
             self.activityIndicator.alpha = 0
+            self.updateTopLeftActionButton()
             self.updateCloseButton(isRequired: needsCloseButton)
         }
 
@@ -510,17 +532,33 @@ extension BulletinViewController {
     func updateCloseButton(isRequired: Bool) {
         isRequired ? showCloseButton() : hideCloseButton()
     }
-
+    
     func showCloseButton() {
         closeButton.alpha = 1
     }
-
+    
     func hideCloseButton() {
         closeButton.alpha = 0
     }
 
     @objc func closeButtonTapped() {
         alternateCloseHandler?(closeButton) ?? manager?.dismissBulletin(animated: true)
+    }
+    
+    func updateTopLeftActionButton() {
+        topLeftActionHandler != nil ? showTopLeftActionButton() : hideTopLeftActionButton()
+    }
+    
+    func showTopLeftActionButton() {
+        topLeftActionButton.alpha = 1
+    }
+    
+    func hideTopLeftActionButton() {
+        topLeftActionButton.alpha = 0
+    }
+    
+    @objc func topLeftActionButtonTapped() {
+        topLeftActionHandler?(topLeftActionButton)
     }
 
 }
