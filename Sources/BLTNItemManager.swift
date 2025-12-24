@@ -620,6 +620,14 @@ extension BLTNItemManager {
         bulletinController.isDismissable = false
         bulletinController.swipeInteractionController?.cancelIfNeeded()
         bulletinController.refreshSwipeInteractionController()
+        
+        bulletinController.topLeftActionImage = currentItem.topLeftActionImage
+        bulletinController.topLeftActionHandler = currentItem.topLeftActionHandler
+        currentItem.topLeftActionButtonConfiguration?(bulletinController.topLeftActionButton)
+        
+        bulletinController.alternateCloseImage = currentItem.alternateCloseImage
+        bulletinController.alternateCloseHandler = currentItem.alternateCloseHandler
+        currentItem.closeButtonConfiguration?(bulletinController.closeButton)
 
         let showActivityIndicator = self.shouldDisplayActivityIndicator
         let contentAlpha: CGFloat =  showActivityIndicator ? 0 : 1
