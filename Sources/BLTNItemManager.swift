@@ -44,6 +44,9 @@ import UIKit
      * The background color of the bulletin card. Defaults to `systemBackground` on iOS 13
      * and white on older versions of the OS.
      *
+     * Ignored on iOS 26 and later: the card is Liquid Glass. Setting a background color on
+     * `contentView` there covers the glass.
+     *
      * Set this value before presenting the bulletin. Changing it after will have no effect.
      */
 

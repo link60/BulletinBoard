@@ -225,7 +225,8 @@ extension BulletinViewController {
             contentView.layer.mask = nil
             contentView.clipsToBounds = true
             contentView.backgroundColor = .clear
-            let effectView = UIVisualEffectView(effect: UIGlassEffect(style: .regular))
+            // Sans effet ici : le verre se matérialise dans l'animation de présentation (moveIntoPlace).
+            let effectView = UIVisualEffectView(effect: nil)
             effectView.translatesAutoresizingMaskIntoConstraints = false
             contentView.insertSubview(effectView, at: 0)
             effectView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
@@ -381,6 +382,11 @@ extension BulletinViewController {
         contentBottomConstraint.constant = -bottomMargin()
         centerYConstraint.constant = 0
 
+        if #available(iOS 26.0, *) {
+            // Posé dans le bloc d'animation, l'effet joue l'animation « materialize » du verre.
+            effectView?.effect = UIGlassEffect(style: .regular)
+        }
+
         view.layoutIfNeeded()
         contentView.layoutIfNeeded()
         backgroundView.layoutIfNeeded()
@@ -471,6 +477,8 @@ extension BulletinViewController {
     }
 
     /// Arrondit la carte : masque continu avant iOS 26, coins de la carte et du verre ensuite.
+    /// Pas de `containerConcentric` : dans la fenêtre plein écran du bulletin, il retombe sur
+    /// son minimum au lieu de suivre les coins de l'écran (constaté sous iOS 27.0).
     fileprivate func setCardCornerRadius(_ radius: CGFloat) {
         contentView.cornerRadius = radius
 
