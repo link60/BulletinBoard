@@ -29,6 +29,9 @@ class HighlightButton: UIButton {
     }
     
     @objc private func highlight() {
+        // Bouton en verre : il a son propre retour tactile, et un alpha < 1 casserait l'effet.
+        guard configuration == nil else { return }
+
         let animations = {
             self.alpha = 0.5
         }
@@ -37,6 +40,8 @@ class HighlightButton: UIButton {
     }
     
     @objc private func unhighlight() {
+        guard configuration == nil else { return }
+
         let animations = {
             self.alpha = 1
         }

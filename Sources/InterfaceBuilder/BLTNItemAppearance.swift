@@ -22,16 +22,16 @@ import UIKit
         }
     }()
     
-    /// The button image to apply to the action button
+    /// The button image to apply to the action button. Ignored on iOS 26 and later (glass button).
     @objc public var actionButtonImage: UIImage?
 
     /// The title color to apply to action button (default white).
     @objc public var actionButtonTitleColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 
-    /// The border color to apply to action button.
+    /// The border color to apply to action button. Ignored on iOS 26 and later (glass button).
     @objc public var actionButtonBorderColor: UIColor? = nil
 
-    /// The border width to apply to action button.
+    /// The border width to apply to action button. Ignored on iOS 26 and later (glass button).
     @objc public var actionButtonBorderWidth: CGFloat = 1.0
 
     /// The title color to apply to the alternative button (default `.link` on iOS 13 and `.blue` on older systems).
@@ -78,7 +78,7 @@ import UIKit
 
     // MARK: - Corner Radius Customization
 
-    /// The corner radius of the action button (default 12).
+    /// The corner radius of the action button (default 12). Ignored on iOS 26 and later (glass capsule).
     @objc public var actionButtonCornerRadius: CGFloat = 12
 
     /// The corner radius of the alternative button (default 12).

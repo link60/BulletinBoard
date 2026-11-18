@@ -92,29 +92,12 @@ import UIKit
     @objc open func makeActionButton(title: String) -> BLTNHighlightButtonWrapper {
         
         let actionButton = HighlightButton()
-        actionButton.layer.cornerRadius = appearance.actionButtonCornerRadius
-        
-        if #available(iOS 13, *) {
-            actionButton.layer.cornerCurve = .continuous
-        }
-        
-        if let actionButtonImage = appearance.actionButtonImage {
-            actionButton.setBackgroundImage(actionButtonImage, for: .normal)
-        }
-        
         actionButton.setTitleColor(appearance.actionButtonTitleColor, for: .normal)
         actionButton.contentHorizontalAlignment = .center
-        
+
         actionButton.setTitle(title, for: .normal)
         actionButton.titleLabel?.font = appearance.makeActionButtonFont()
-        
-        actionButton.clipsToBounds = true
-        
-        if let color = appearance.actionButtonBorderColor {
-            actionButton.layer.borderColor = color.cgColor
-            actionButton.layer.borderWidth = appearance.actionButtonBorderWidth
-        }
-        
+
         let wrapper = BLTNHighlightButtonWrapper(button: actionButton)
         wrapper.setContentHuggingPriority(.defaultLow, for: .horizontal)
         
@@ -125,9 +108,35 @@ import UIKit
         if #available(iOS 26.0, *) {
             // Verre teinté par la tintColor, qui suit seul le mode clair / sombre de la feuille.
             // Pas de variante clear : elle est réservée aux fonds média, la carte est en verre regular.
-            actionButton.configuration = .prominentGlass()
+            // Le verre donne la forme (capsule) : ni coins, ni bordure, ni image de fond, qui le
+            // découperaient ou le recouvriraient. Une configuration ignore titleLabel.font et
+            // setTitleColor : police et couleur passent par elle. Le titre reste posé par setTitle,
+            // que les apps rappellent pour le changer.
+            var configuration = UIButton.Configuration.prominentGlass()
+            configuration.baseForegroundColor = appearance.actionButtonTitleColor
+            let font = appearance.makeActionButtonFont()
+            configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+                var attributes = attributes
+                attributes.font = font
+                return attributes
+            }
+            actionButton.configuration = configuration
             actionButton.tintColor = appearance.actionButtonColor
         } else {
+            actionButton.layer.cornerRadius = appearance.actionButtonCornerRadius
+            actionButton.layer.cornerCurve = .continuous
+            actionButton.clipsToBounds = true
+
+            if let actionButtonImage = appearance.actionButtonImage {
+                actionButton.setBackgroundImage(actionButtonImage, for: .normal)
+            }
+
+            if let color = appearance.actionButtonBorderColor {
+                actionButton.layer.borderColor = color.cgColor
+                actionButton.layer.borderWidth = appearance.actionButtonBorderWidth
+            }
+
+
             if UIScreen.main.traitCollection.userInterfaceStyle == .dark {
                 actionButton.tintColor = appearance.actionButtonColor.withAlphaComponent(0.35)
                 if #available(iOS 15.0, *) {

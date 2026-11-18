@@ -7,10 +7,13 @@ import UIKit
 
 /**
  * A button to close the bulletin.
+ *
+ * On iOS 26 and later, it is a system glass button, like the close buttons of system sheets.
+ * Earlier versions keep the custom drawn circle.
  */
 
-public final class BulletinCloseButton: UIControl {
-    
+public final class BulletinCloseButton: UIButton {
+
     var glyphWidthConstrain: NSLayoutConstraint? = nil
     var alternateImage: UIImage? {
         didSet {
@@ -19,6 +22,7 @@ public final class BulletinCloseButton: UIControl {
                 glyphWidthConstrain?.isActive = false
                 glyphWidthConstrain?.constant = 20
                 glyphWidthConstrain?.isActive = true
+                configuration?.image = alternateImage
             }
         }
     }
@@ -67,6 +71,14 @@ public final class BulletinCloseButton: UIControl {
         backgroundContainer.isUserInteractionEnabled = false
         glyph.isUserInteractionEnabled = false
 
+        if #available(iOS 26.0, *) {
+            var configuration = UIButton.Configuration.glass()
+            configuration.image = alternateImage ?? UIImage(systemName: "xmark")
+            self.configuration = configuration
+            backgroundContainer.isHidden = true
+            glyph.isHidden = true
+        }
+
     }
 
     private func configureConstraints() {
@@ -107,6 +119,9 @@ public final class BulletinCloseButton: UIControl {
     }
     
     @objc private func highlight() {
+        // Bouton en verre : il a son propre retour tactile, et un alpha < 1 casserait l'effet.
+        guard configuration == nil else { return }
+
         let animations = {
             self.alpha = 0.5
         }
@@ -115,6 +130,8 @@ public final class BulletinCloseButton: UIControl {
     }
 
     @objc func unhighlight() {
+        guard configuration == nil else { return }
+
         let animations = {
             self.alpha = 1
         }
