@@ -123,12 +123,10 @@ import UIKit
         heightConstraint.isActive = true
         
         if #available(iOS 26.0, *) {
-            actionButton.configuration = .prominentClearGlass()
-            if UIScreen.main.traitCollection.userInterfaceStyle == .dark {
-                actionButton.configuration?.baseBackgroundColor = appearance.actionButtonColor.withAlphaComponent(0.35)
-            } else {
-                actionButton.configuration?.baseBackgroundColor = appearance.actionButtonColor
-            }
+            // Verre teinté par la tintColor, qui suit seul le mode clair / sombre de la feuille.
+            // Pas de variante clear : elle est réservée aux fonds média, la carte est en verre regular.
+            actionButton.configuration = .prominentGlass()
+            actionButton.tintColor = appearance.actionButtonColor
         } else {
             if UIScreen.main.traitCollection.userInterfaceStyle == .dark {
                 actionButton.tintColor = appearance.actionButtonColor.withAlphaComponent(0.35)

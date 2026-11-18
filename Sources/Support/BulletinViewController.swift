@@ -220,6 +220,10 @@ extension BulletinViewController {
         contentView.bringSubviewToFront(closeButton)
         
         if #available(iOS 26.0, *) {
+            // UIVisualEffectView.h : un masque sur une superview fait échouer l'effet. La carte
+            // est donc découpée par ses coins (clipsToBounds), plus par le masque continu.
+            contentView.layer.mask = nil
+            contentView.clipsToBounds = true
             contentView.backgroundColor = .clear
             let effectView = UIVisualEffectView(effect: UIGlassEffect(style: .regular))
             effectView.translatesAutoresizingMaskIntoConstraints = false
@@ -229,6 +233,7 @@ extension BulletinViewController {
             effectView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
             effectView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
             self.effectView = effectView
+            setCardCornerRadius(contentView.cornerRadius)
         }
     }
 
@@ -248,11 +253,9 @@ extension BulletinViewController {
         }
 
         contentView.backgroundColor = manager.backgroundColor
-        contentView.cornerRadius = CGFloat((manager.cardCornerRadius ?? 12).doubleValue)
+        setCardCornerRadius(CGFloat((manager.cardCornerRadius ?? 12).doubleValue))
         topLeftActionButton.updateColors(isDarkBackground: manager.backgroundColor.needsDarkText == false)
         closeButton.updateColors(isDarkBackground: manager.backgroundColor.needsDarkText == false)
-
-        effectView?.layer.cornerRadius = contentView.cornerRadius
 
         let cardPadding = manager.edgeSpacing.rawValue
 
@@ -459,14 +462,23 @@ extension BulletinViewController {
     fileprivate func updateCornerRadius() {
 
         if manager?.edgeSpacing.rawValue == 0 {
-            contentView.cornerRadius = 0
-            effectView?.layer.cornerRadius = 0
+            setCardCornerRadius(0)
             return
         }
 
         let defaultRadius: NSNumber = screenHasRoundedCorners ? 36 : 12
-        contentView.cornerRadius = CGFloat((manager?.cardCornerRadius ?? defaultRadius).doubleValue)
-        effectView?.layer.cornerRadius = contentView.cornerRadius
+        setCardCornerRadius(CGFloat((manager?.cardCornerRadius ?? defaultRadius).doubleValue))
+    }
+
+    /// Arrondit la carte : masque continu avant iOS 26, coins de la carte et du verre ensuite.
+    fileprivate func setCardCornerRadius(_ radius: CGFloat) {
+        contentView.cornerRadius = radius
+
+        if #available(iOS 26.0, *) {
+            let corners = UICornerConfiguration.corners(radius: .fixed(radius))
+            contentView.cornerConfiguration = corners
+            effectView?.cornerConfiguration = corners
+        }
     }
 
 }
@@ -621,7 +633,8 @@ extension BulletinViewController {
 
     @objc func onKeyboardShow(_ notification: Notification) {
 
-        guard manager?.currentItem.shouldRespondToKeyboardChanges == true else {
+        // Pendant la fermeture, un layout renverrait la carte à sa place (iOS 26 : pas de snapshot).
+        guard manager?.currentItem.shouldRespondToKeyboardChanges == true, activeSnapshotView == nil else {
             return
         }
 
@@ -653,7 +666,8 @@ extension BulletinViewController {
 
     @objc func onKeyboardHide(_ notification: Notification) {
 
-        guard manager?.currentItem.shouldRespondToKeyboardChanges == true else {
+        // Pendant la fermeture, un layout renverrait la carte à sa place (iOS 26 : pas de snapshot).
+        guard manager?.currentItem.shouldRespondToKeyboardChanges == true, activeSnapshotView == nil else {
             return
         }
 

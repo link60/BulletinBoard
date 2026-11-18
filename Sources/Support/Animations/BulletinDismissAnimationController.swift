@@ -24,6 +24,38 @@ class BulletinDismissAnimationController: NSObject, UIViewControllerAnimatedTran
         let contentView = fromVC.contentView
         let backgroundView = fromVC.backgroundView!
         let activityIndicatorView = fromVC.activityIndicator
+        let duration = transitionDuration(using: transitionContext)
+        let options = UIView.AnimationOptions(rawValue: 6 << 16)
+
+        if #available(iOS 26.0, *) {
+            // UIVisualEffectView.h : un snapshot ne contient pas l'effet (verre figé).
+            // On déplace donc la vraie carte, par son centre : le swipe, lui, joue sur sa transform.
+            let offset = rootView.bounds.maxY + 12 - contentView.frame.minY
+            fromVC.prepareForDismissal(displaying: contentView)
+
+            let animations = {
+                contentView.center.y += offset
+                activityIndicatorView.center.y += offset
+                backgroundView.hide()
+            }
+
+            UIView.animate(withDuration: duration, delay: 0, options: options, animations: animations) { _ in
+                let isCancelled = transitionContext.transitionWasCancelled
+
+                if isCancelled {
+                    fromVC.activeSnapshotView = nil
+                    rootView.setNeedsLayout()
+                    rootView.layoutIfNeeded()
+                } else {
+                    fromVC.view.removeFromSuperview()
+                }
+
+                transitionContext.completeTransition(!isCancelled)
+            }
+
+            return
+        }
+
         let snapshotActivityIndicator = ActivityIndicator()
         snapshotActivityIndicator.startAnimating()
 
@@ -61,9 +93,6 @@ class BulletinDismissAnimationController: NSObject, UIViewControllerAnimatedTran
 
         // Animate dismissal
 
-        let duration = transitionDuration(using: transitionContext)
-        let options = UIView.AnimationOptions(rawValue: 6 << 16)
-
         let animations = {
             snapshot.frame.origin.y = rootView.frame.maxY + 12
             backgroundView.hide()
@@ -79,6 +108,7 @@ class BulletinDismissAnimationController: NSObject, UIViewControllerAnimatedTran
                 contentView.isHidden = false
                 activityIndicatorView.isHidden = false
                 snapshot.removeFromSuperview()
+                fromVC.activeSnapshotView = nil
             }
 
             transitionContext.completeTransition(!isCancelled)
