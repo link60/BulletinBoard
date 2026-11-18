@@ -5,7 +5,10 @@
 
 import UIKit
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+@main
+class AppDelegate: UIResponder, UIApplicationDelegate {}
+
+/// Le SDK 27 impose le cycle de vie UIScene : sans lui, l'app s'arrête au lancement.
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 }
