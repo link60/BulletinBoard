@@ -135,6 +135,16 @@ import UIKit
         return bulletinController?.presentingViewController != nil
     }
 
+    /**
+     * Le mode clair / sombre imposé à la feuille. `.unspecified` (défaut) : celui du système.
+     *
+     * La feuille est présentée en plein écran, souvent dans sa propre fenêtre : elle n'hérite
+     * donc pas d'un `overrideUserInterfaceStyle` posé sur l'écran appelant. À régler avant
+     * `showBulletin`.
+     */
+
+    @objc public var interfaceStyle: UIUserInterfaceStyle = .unspecified
+
     // MARK: - Private Properties
 
     var currentItem: BLTNItem
@@ -198,6 +208,7 @@ extension BLTNItemManager {
 
         bulletinController = BulletinViewController()
         bulletinController.manager = self
+        bulletinController.overrideUserInterfaceStyle = interfaceStyle
 
         bulletinController.modalPresentationStyle = .overFullScreen
         bulletinController.transitioningDelegate = bulletinController
