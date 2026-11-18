@@ -43,12 +43,16 @@ import UIKit
 
     @objc open var requiresCloseButton: Bool = true
     
+    /// On iOS 26 and later, the glass button tints the image like a template. Pass an
+    /// `.alwaysOriginal` image to keep its own colors (e.g. a `hierarchicalColor` symbol).
     @objc open var alternateCloseImage: UIImage? = nil
     
     @objc open var alternateCloseHandler: ((BulletinCloseButton) -> Void)?
     
     @objc open var closeButtonConfiguration: ((BulletinCloseButton) -> Void)?
     
+    /// On iOS 26 and later, the glass button tints the image like a template. Pass an
+    /// `.alwaysOriginal` image to keep its own colors (e.g. a `hierarchicalColor` symbol).
     @objc open var topLeftActionImage: UIImage? = nil
     
     @objc open var topLeftActionHandler: ((BulletinCloseButton) -> Void)?

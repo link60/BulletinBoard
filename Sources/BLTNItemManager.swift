@@ -160,7 +160,7 @@ import UIKit
     fileprivate var isPrepared: Bool = false
     fileprivate var isPreparing: Bool = false
     fileprivate var shouldDisplayActivityIndicator: Bool = false
-    fileprivate var lastActivityIndicatorColor: UIColor = .black
+    fileprivate var lastActivityIndicatorColor: UIColor = .label
 
     // MARK: - Initialization
 

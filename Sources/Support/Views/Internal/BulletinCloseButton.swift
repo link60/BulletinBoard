@@ -74,7 +74,12 @@ public final class BulletinCloseButton: UIButton {
         if #available(iOS 26.0, *) {
             var configuration = UIButton.Configuration.glass()
             configuration.image = alternateImage ?? UIImage(systemName: "xmark")
+            // Taille fixe, comme les boutons de barre : le cercle fait 44 pt et un symbole qui
+            // suivrait Dynamic Type en déborderait. Le Large Content Viewer prend le relais.
+            configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 17)
             self.configuration = configuration
+            showsLargeContentViewer = true
+            addInteraction(UILargeContentViewerInteraction())
             backgroundContainer.isHidden = true
             glyph.isHidden = true
         }

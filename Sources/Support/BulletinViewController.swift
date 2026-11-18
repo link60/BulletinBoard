@@ -198,7 +198,7 @@ extension BulletinViewController {
         } else {
             activityIndicator.style = .whiteLarge
         }
-        activityIndicator.color = .black
+        activityIndicator.color = .label
         activityIndicator.isUserInteractionEnabled = false
 
         activityIndicator.alpha = 0

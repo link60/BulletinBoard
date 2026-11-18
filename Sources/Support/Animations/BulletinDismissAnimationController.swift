@@ -79,7 +79,7 @@ class BulletinDismissAnimationController: NSObject, UIViewControllerAnimatedTran
         } else {
             snapshotActivityIndicator.style = .whiteLarge
         }
-        snapshotActivityIndicator.color = .black
+        snapshotActivityIndicator.color = activityIndicatorView.color
         snapshotActivityIndicator.isUserInteractionEnabled = false
 
         snapshotActivityIndicator.alpha = activityIndicatorView.alpha
