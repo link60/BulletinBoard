@@ -107,6 +107,20 @@ import UIKit
 
     @objc open var dismissalHandler: ((BLTNItem) -> Void)?
 
+    /**
+     * The block of code to execute when the user presses the left arrow key of a hardware keyboard
+     * (iPad, Mac Catalyst). Leave it `nil` to ignore the key.
+     */
+
+    @objc open var leftArrowKeyHandler: ((BLTNItem) -> Void)?
+
+    /**
+     * The block of code to execute when the user presses the right arrow key of a hardware keyboard
+     * (iPad, Mac Catalyst). Leave it `nil` to ignore the key.
+     */
+
+    @objc open var rightArrowKeyHandler: ((BLTNItem) -> Void)?
+
     // MARK: - Interface
 
     /**

@@ -420,6 +420,48 @@ extension BulletinViewController {
         return dismissIfPossible()
     }
 
+    // MARK: - Hardware Keyboard
+
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Needed to receive key commands, but never steal the focus of a text field of the card.
+        if !view.containsFirstResponder {
+            becomeFirstResponder()
+        }
+    }
+
+    override var keyCommands: [UIKeyCommand]? {
+        var commands = [UIKeyCommand(input: UIKeyCommand.inputEscape, modifierFlags: [], action: #selector(escapeKeyPressed))]
+        if manager?.currentItem.leftArrowKeyHandler != nil {
+            commands.append(UIKeyCommand(input: UIKeyCommand.inputLeftArrow, modifierFlags: [], action: #selector(leftArrowKeyPressed)))
+        }
+        if manager?.currentItem.rightArrowKeyHandler != nil {
+            commands.append(UIKeyCommand(input: UIKeyCommand.inputRightArrow, modifierFlags: [], action: #selector(rightArrowKeyPressed)))
+        }
+        if #available(iOS 15.0, *) {
+            commands.forEach { $0.wantsPriorityOverSystemBehavior = true }
+        }
+        return commands
+    }
+
+    @objc fileprivate func escapeKeyPressed() {
+        dismissIfPossible()
+    }
+
+    @objc fileprivate func leftArrowKeyPressed() {
+        guard let item = manager?.currentItem else { return }
+        item.leftArrowKeyHandler?(item)
+    }
+
+    @objc fileprivate func rightArrowKeyPressed() {
+        guard let item = manager?.currentItem else { return }
+        item.rightArrowKeyHandler?(item)
+    }
+
 }
 
 // MARK: - System Elements
@@ -702,5 +744,11 @@ extension BulletinViewController {
 extension UIView.AnimationOptions {
     init(curve: UIView.AnimationCurve) {
         self = UIView.AnimationOptions(rawValue: UInt(curve.rawValue << 16))
+    }
+}
+
+extension UIView {
+    var containsFirstResponder: Bool {
+        return isFirstResponder || subviews.contains { $0.containsFirstResponder }
     }
 }
